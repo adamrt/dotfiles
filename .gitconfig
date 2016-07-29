@@ -1,0 +1,7 @@
+[user]
+  name = Adam Patterson
+  email = adam@adamrt.com
+[color]
+  ui = true
+[diff]
+  algorithm = patience
