@@ -1,4 +1,4 @@
-# Thanks @jcs
+! Most from @jcs
 
 #define BG			#e3e0d5
 #define FG			#494949
@@ -55,7 +55,7 @@ Xcursor.size:			28
 
 ! xterm-specific settings
 
-*.XTerm.*.faceName:		dejavu sans mono:size=8
+*.XTerm.*.faceName:		dejavu sans mono:size=10
 *.XTerm.*.scaleHeight:		1.01
 *.XTerm.*.internalBorder:	4
 
