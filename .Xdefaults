@@ -1,60 +1,73 @@
-! Most from @jcs
+! Fonts
+Xft.antialias: 1
+Xft.autohint:  0
+Xft.dpi:       125
+Xft.hinting:   1
+Xft.hintstyle: hintslight
+Xft.lcdfilter: lcddefault
+Xft.rgba:      rgb
 
-#define BG			#e3e0d5
-#define FG			#494949
-
-Xcursor.theme:			dmz
-Xcursor.size:			28
-
-*.background:			BG
-*.foreground:			FG
-*.scrollbar.background:		BG
-*.scrollbar.foreground:		#bbb
-
-*.borderColor:			BG
-
+! Colors
 ! black
-*.color0:			#393939
-*.color8:			#525252
-
+#define nord0 #2E3440
+#define nord8 #88C0D0
 ! red
-*.color1:			#825b69
-*.color9:			#bda0aa
-
+#define nord1 #3B4252
+#define nord9 #81A1C1
 ! green
-*.color2:			#69825b
-*.color10:			#aabda0
-
+#define nord2 #434C5E
+#define nord10 #5E81AC
 ! yellow
-*.color3:			#82755b
-*.color11:			#bdb3a0
-
+#define nord3 #4C566A
+#define nord11 #BF616A
 ! blue
-*.color4:			#5b6982
-*.color12:			#a0aabd
-
+#define nord4 #D8DEE9
+#define nord12 #D08770
 ! magenta
-*.color5:			#755b82
-*.color13:			#b3a0bd
-
+#define nord5 #E5E9F0
+#define nord13 #EBCB8B
 ! cyan
-*.color6:			#5b8275
-*.color14:			#a0bdb3
+#define nord6 #ECEFF4
+#define nord14 #A3BE8C
+!white
+#define nord7 #8FBCBB
+#define nord15 #B48EAD
 
-! white
-*.color7:			#cacaca
-*.color15:			#ffffff
+*.color0: nord1
+*.color1: nord11
+*.color2: nord14
+*.color3: nord13
+*.color4: nord9
+*.color5: nord15
+*.color6: nord8
+*.color7: nord5
+*.color8: nord3
+*.color9: nord11
+*.color10: nord14
+*.color11: nord13
+*.color12: nord9
+*.color13: nord15
+*.color14: nord7
+*.color15: nord6
 
-*.font:				-*-lucida-medium-r-*-*-20-*-*-*-*-*-*-*
+*.foreground:   nord4
+*.background:   nord0
 
+*fading: 35
+*fadeColor: nord3
+
+*.scrollbar.background:		BG
+*.scrollbar.foreground:		red !#bbb
 *.scrollbar:			true
 *.scrollbar.minimumThumb:	50
 *.scrollbar*width:		10
 *.saveLines:			20000
 
+Xcursor.theme:			dmz
+Xcursor.size:			28
+*.cursorColor:  nord4
 
-! xterm-specific settings
-
+! Xterm
 *.XTerm.*.faceName:		dejavu sans mono:size=10
 *.XTerm.*.scaleHeight:		1.01
 *.XTerm.*.internalBorder:	4
