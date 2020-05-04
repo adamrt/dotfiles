@@ -13,6 +13,9 @@ fi
 
 cd ~/.dotfiles
 for f in .???*; do
+    if [ $f -nq ".git" ]
+    then
 	rm -f ~/$f
 	(cd ~/; ln -s .dotfiles/$f $f)
+    fi
 done
