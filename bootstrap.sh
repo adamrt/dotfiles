@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/bin/sh
 
 # wget -qO- https://raw.githubusercontent.com/adamrt/dotfiles/master/bootstrap.sh | sh -
 
