@@ -13,7 +13,7 @@ fi
 
 cd ~/.dotfiles
 for f in .???*; do
-    if [ "$f" != ".git" && "$f" != ".gitignore" ]; then
+    if [ "$f" == ".git" || "$f" == ".gitignore" ]; then
         continue
     fi
 
