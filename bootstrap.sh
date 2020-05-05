@@ -13,8 +13,10 @@ fi
 
 cd ~/.dotfiles
 for f in .???*; do
-    if [ "$f" != ".git" ]; then
-	rm -f ~/$f
-	(cd ~/; ln -s .dotfiles/$f $f)
+    if [ "$f" != ".git" && "$f" != ".gitignore" ]; then
+        continue
     fi
+
+    rm -f ~/$f
+    (cd ~/; ln -s .dotfiles/$f $f)
 done
