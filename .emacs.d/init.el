@@ -113,7 +113,7 @@
   :init (delete 'Git vc-handled-backends))
 
 (use-package rcirc :init (progn (setq rcirc-default-nick "adamrt" rcirc-server-alist '(("irc.freenode.net" :port 6697 :encryption tls :channels ("#openbsd"))))))
-(use-package sane-term :load-path "~/code/sane-term/" :bind (("C-x t" . sane-term) ("C-x T" . sane-term-create)))
+(use-package sane-term :bind (("C-x t" . sane-term) ("C-x T" . sane-term-create)))
 ;; Searching withing macros is warped
 ;; (use-package swiper :after ivy :bind (("C-s" . swiper) ("C-r" . swiper)))
 
