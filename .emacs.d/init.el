@@ -297,7 +297,7 @@ If the CDR is nil, then the buffer is only buried."
  ;; If there is more than one, they won't work right.
  '(package-selected-packages
    (quote
-    (company pyenv-mode-auto rfc-mode evil restclient dumb-jump flycheck go-mode flx counsel magit pinentry use-package))))
+    (virtualenvwrapper company pyenv-mode-auto rfc-mode evil restclient dumb-jump flycheck go-mode flx counsel magit pinentry use-package))))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
