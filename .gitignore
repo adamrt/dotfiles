@@ -1,3 +1,6 @@
 .emacs.d/elpa/
 .emacs.d/.persistent-scratch
 .emacs.d/org-clock-save.el
+/.emacs.d/recentf
+/.emacs.d/smex-items
+/.emacs.d/url/
