@@ -191,7 +191,7 @@
                 LaTeX-mode-hook))
   (add-hook hook 'flyspell-prog-mode))
 
-(setq org-directory "~/Dropbox/org/"
+(setq org-directory "~/sync/org/"
       org-agenda-files (list org-directory)
       org-clock-persist 'history
       org-capture-templates
