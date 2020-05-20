@@ -19,6 +19,7 @@ fi
 xset r rate 350 35
 xset m 3/1 4
 setxkbmap -option ctrl:nocaps
+xmodmap .Xmodmap
 redshift -l 41.90:-87.66 -t 5500:3700 &
 xsetroot -solid '#6C7C87' -cursor_name left_ptr
-exec cwm
+exec i3
