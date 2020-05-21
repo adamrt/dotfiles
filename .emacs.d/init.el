@@ -280,7 +280,7 @@ If the CDR is nil, then the buffer is only buried."
 (global-set-key (kbd "C-s") 'isearch-forward-regexp)
 
 (global-set-key (kbd "C-c a") 'org-agenda)
-(global-set-key (kbd "C-c b") 'org-iswitchb)
+(global-set-key (kbd "C-c b") 'org-switchb)
 (global-set-key (kbd "C-c c") 'org-capture)
 (global-set-key (kbd "C-c l") 'org-store-link)
 (global-set-key (kbd "C-c p") 'ag-project) (global-set-key (kbd "C-x p") 'ag)
