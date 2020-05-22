@@ -23,4 +23,5 @@
  (magit-reset nil)
  (magit-show-refs nil)
  (magit-stash nil)
- (magit-submodule nil))
+ (magit-submodule nil)
+ (magit-tag nil))

@@ -25,3 +25,5 @@ export LESSHISTFILE=-
 # GPG
 export GPG_TTY=$(tty)
 gpgconf --launch gpg-agent
+
+export PATH=$PATH:~/go/bin
