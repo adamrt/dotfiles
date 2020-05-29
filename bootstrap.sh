@@ -21,6 +21,8 @@ for f in .???*; do
     (cd ~/; ln -s .dotfiles/$f $f)
 done
 
+# This is not cool. Improve this is a more generic way. Useful for
+# ~/.config as well.
 cd ~/.dotfiles
 [ -d ~/.gnupg ] || mkdir -m700 ~/.gnupg
 for f in gnupg/*; do
