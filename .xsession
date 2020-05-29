@@ -1,5 +1,9 @@
 #!/bin/sh
 
+# xenocara wont automatically process ~/.profile.
+# Therefore wont setup ENV for interactive shells.
+. ~/.profile
+
 export LANG=en_US.UTF-8
 
 xrdb ~/.Xdefaults
@@ -23,3 +27,6 @@ xmodmap .Xmodmap
 redshift -l 41.90:-87.66 -t 5500:3700 &
 xsetroot -solid '#6C7C87' -cursor_name left_ptr
 exec i3
+if [ -x /usr/local/bin/dbus-launch -a -z "${DBUS_SESSION_BUS_ADDRESS}" ]; then
+	eval `dbus-launch --sh-syntax --exit-with-x11`
+fi

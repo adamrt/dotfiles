@@ -3,6 +3,9 @@
 ;;; Commentary:
 
 ;;; Packages
+(when (display-graphic-p)
+  (add-to-list 'default-frame-alist '(font . "DejaVu Sans Mono-18")))
+
 (require 'package)
 (setq package-enable-at-startup nil)
 (add-to-list 'package-archives '("melpa" . "http://melpa.org/packages/"))
