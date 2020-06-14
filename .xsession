@@ -17,15 +17,21 @@ if [ `uname -s` == "OpenBSD" ]; then
     xidle -timeout 600 -ne -program ~/bin/lock &
     xbanish &
     xdimmer &
-    synclient ClickPad=1 HorizTwoFingerScroll=1 RightButtonAreaLeft=800 HorizHysteresis=10 VertHysteresis=10
+    # synclient ClickPad=1 HorizTwoFingerScroll=1 RightButtonAreaLeft=800 HorizHysteresis=10 VertHysteresis=10
 fi
 
 # Repeat rate
 xset r rate 350 35
-xset m 3/1 4
 
 # BG color
 xsetroot -solid '#6C7C87' -cursor_name left_ptr
+
+# Mouse speed
+# xset m 3/1 4
+# xset was making too fast, and below was really just compensating.
+# Remove both
+# xinput set-prop /dev/wsmouse "Device Accel Constant Deceleration" 1.8
+
 # This turns HHKB ctrl into caps
 # This is probably better suited for a dock/undock.sh
 # setxkbmap -option ctrl:nocaps
