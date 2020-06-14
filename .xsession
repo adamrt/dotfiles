@@ -9,14 +9,14 @@ export LANG=en_US.UTF-8
 xrdb ~/.Xdefaults
 
 if [ `uname -s` == "OpenBSD" ]; then
-    xset +fp /usr/local/share/fonts/Liberation/
-    xset +fp /usr/local/share/fonts/ghostscript/
-    xset +fp /usr/local/share/fonts/cantarell/
-    xset +fp /usr/local/share/fonts/terminus/
+    xset +fp /usr/local/share/fonts/Liberation/  # Replace mscorettf
+    xset +fp /usr/local/share/fonts/ghostscript/ # PDF/Print?
+    xset +fp /usr/local/share/fonts/cantarell/   # Gnome fonts as of 3.0
+    xset +fp /usr/local/share/fonts/terminus/    # Is this even in use?
     xset fp rehash
-    xidle -timeout 600 -ne -program ~/bin/lock &
     xbanish &
     xdimmer &
+    # xidle -timeout 600 -ne -program ~/bin/lock &
     # synclient ClickPad=1 HorizTwoFingerScroll=1 RightButtonAreaLeft=800 HorizHysteresis=10 VertHysteresis=10
 fi
 
