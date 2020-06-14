@@ -22,11 +22,15 @@ fi
 
 xset r rate 350 35
 xset m 3/1 4
-setxkbmap -option ctrl:nocaps
-xmodmap .Xmodmap
-redshift -l 41.90:-87.66 -t 5500:3700 &
 xsetroot -solid '#6C7C87' -cursor_name left_ptr
-exec i3
+# This turns HHKB ctrl into caps
+# This is probably better suited for a dock/undock.sh
+# setxkbmap -option ctrl:nocaps
+# xmodmap .Xmodmap
+
+redshift -l 41.90:-87.66 -t 5500:3700 &
+
 if [ -x /usr/local/bin/dbus-launch -a -z "${DBUS_SESSION_BUS_ADDRESS}" ]; then
 	eval `dbus-launch --sh-syntax --exit-with-x11`
 fi
+exec i3
