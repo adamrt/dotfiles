@@ -10,3 +10,5 @@
 	gpgSign = true
 [tag]
 	gpgSign = true
+[github]
+	user = adamrt
