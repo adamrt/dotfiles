@@ -5,3 +5,4 @@
 .emacs.d/smex-items
 .emacs.d/url/
 .emacs.d/flycheck_init.el
+.emacs.d/forge-database.sqlite
