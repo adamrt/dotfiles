@@ -115,6 +115,9 @@
   :bind (("C-x g" . magit-status))
   :init (delete 'Git vc-handled-backends))
 
+(use-package forge
+  :after magit)
+
 (use-package rcirc :init (progn (setq rcirc-default-nick "adamrt" rcirc-server-alist '(("irc.freenode.net" :port 6697 :encryption tls :channels ("#openbsd"))))))
 (use-package sane-term :bind (("C-x t" . sane-term) ("C-x T" . sane-term-create)))
 ;; Searching withing macros is warped
@@ -300,7 +303,7 @@ If the CDR is nil, then the buffer is only buried."
  ;; If there is more than one, they won't work right.
  '(package-selected-packages
    (quote
-    (virtualenvwrapper company pyenv-mode-auto rfc-mode evil restclient dumb-jump flycheck go-mode flx counsel magit pinentry use-package))))
+    (smartparens forge sqlformat virtualenvwrapper company pyenv-mode-auto rfc-mode evil restclient dumb-jump flycheck go-mode flx counsel magit pinentry use-package))))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
