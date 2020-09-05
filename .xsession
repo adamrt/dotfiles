@@ -23,6 +23,9 @@ fi
 # Repeat rate
 xset r rate 350 35
 
+# Disable bell
+xset b off
+
 # BG color
 xsetroot -solid '#6C7C87' -cursor_name left_ptr
 
@@ -43,4 +46,6 @@ xsetroot -solid '#6C7C87' -cursor_name left_ptr
 if [ -x /usr/local/bin/dbus-launch -a -z "${DBUS_SESSION_BUS_ADDRESS}" ]; then
 	eval `dbus-launch --sh-syntax --exit-with-x11`
 fi
-exec i3
+
+#exec i3
+exec cwm
