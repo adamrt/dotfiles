@@ -144,7 +144,7 @@
     (add-to-list 'auto-mode-alist '("\\.vue?\\'" . web-mode))
     (add-to-list 'auto-mode-alist '("\\.html?\\'" . web-mode)))
   :config
-  (setq web-mode-markup-indent-offset 4
+  (setq web-mode-markup-indent-offset 2
         web-mode-css-indent-offset 2
         web-mode-code-indent-offset 2
         web-mode-script-padding 2 ;; inside <script>
@@ -206,6 +206,7 @@
         ("p" "Personal" entry (file+headline "personal.org" "Tasks") "* TODO %?\n  %i\n %t\n %a")
         ("j" "Journal" entry (file+datetree "journal.org") "* %?\nEntered on %U\n  %i\n  %a")))
 (org-clock-persistence-insinuate)
+(define-key org-mode-map (kbd "C-j") (lambda () (interactive) (join-line -1)))
 
 (use-package dash)
 (setq dired-listing-switches "-alh")

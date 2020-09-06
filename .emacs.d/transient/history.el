@@ -1,8 +1,10 @@
-((magit-blame
+((forge-dispatch nil)
+ (magit-blame
   ("-w"))
  (magit-branch nil)
  (magit-cherry-pick
-  ("--ff"))
+  ("--ff")
+  nil)
  (magit-commit nil)
  (magit-diff
   ("--no-ext-diff" "--stat"))
@@ -11,6 +13,7 @@
  (magit-gitignore nil)
  (magit-log
   ("-n256" "--graph" "--decorate")
+  ("-n256" "--decorate")
   ("-n256" "--graph" "--color" "--decorate"))
  (magit-merge nil
               ("--ff-only"))
@@ -22,6 +25,9 @@
              ("--force"))
  (magit-rebase nil)
  (magit-reset nil)
+ (magit-revert
+  ("--edit")
+  nil)
  (magit-show-refs nil)
  (magit-stash nil)
  (magit-submodule nil)
