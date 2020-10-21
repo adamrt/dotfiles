@@ -1,4 +1,6 @@
 ((forge-dispatch nil)
+ (magit-am
+  ("--3way"))
  (magit-blame
   ("-w"))
  (magit-branch nil)
@@ -14,6 +16,7 @@
  (magit-log
   ("-n256" "--graph" "--decorate")
   ("-n256" "--decorate")
+  (("--" "simplex/sales_order_cmd_generator.go"))
   ("-n256" "--graph" "--color" "--decorate"))
  (magit-merge nil
               ("--ff-only"))

@@ -89,6 +89,14 @@
     (add-hook 'python-mode-hook '(lambda() (set-fill-column 88)))
     (add-hook 'python-mode-hook 'blacken-mode)))
 
+;; This keycord overlaps ag
+;; (use-package projectile
+;;   :ensure t
+;;   :config
+;;   (define-key projectile-mode-map (kbd "C-c p") 'projectile-command-map)
+;;   (setq projectile-project-search-path '("~/src/"))
+;;   (projectile-mode +1))
+
 (use-package go-mode
   :init
   (progn
@@ -101,7 +109,8 @@
   :ensure t
   :init (global-flycheck-mode)
   :config
-  (setq flycheck-python-flake8-executable "python3"))
+  (setq flycheck-python-flake8-executable "python3"
+        flycheck-disabled-checkers '(python-mypy)))
 
 (use-package ag
   :config
@@ -199,12 +208,13 @@
 
 (setq org-directory "~/sync/org/"
       org-agenda-files (list org-directory)
-      org-clock-persist 'history
-      org-capture-templates
-      '(("w" "Work" entry (file+headline "work.org" "Tasks") "* TODO %?\n  %i\n %t\n %a")
-        ("e" "Even" entry (file+headline "even.org" "Tasks") "* TODO %?\n  %i\n %t\n %a")
-        ("p" "Personal" entry (file+headline "personal.org" "Tasks") "* TODO %?\n  %i\n %t\n %a")
-        ("j" "Journal" entry (file+datetree "journal.org") "* %?\nEntered on %U\n  %i\n  %a")))
+      org-default-notes-file "~/sync/org/organizer.org"
+      org-clock-persist 'history)
+;; org-capture-templates
+;; '(("w" "Work" entry (file+headline "work.org" "Tasks") "* TODO %?\n  %i\n %t\n %a")
+;;   ("e" "Even" entry (file+headline "even.org" "Tasks") "* TODO %?\n  %i\n %t\n %a")
+;;   ("p" "Personal" entry (file+headline "personal.org" "Tasks") "* TODO %?\n  %i\n %t\n %a")
+;;   ("j" "Journal" entry (file+datetree "journal.org") "* %?\nEntered on %U\n  %i\n  %a")))
 (org-clock-persistence-insinuate)
 (define-key org-mode-map (kbd "C-j") (lambda () (interactive) (join-line -1)))
 
@@ -302,17 +312,24 @@ If the CDR is nil, then the buffer is only buried."
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
+ '(custom-safe-themes
+   (quote
+    ("532a85b472fe3fe4b5791f8d06727066b2678f404a63fb0d51c6360d88f8781e" default)))
  '(package-selected-packages
    (quote
-    (smartparens forge sqlformat virtualenvwrapper company pyenv-mode-auto rfc-mode evil restclient dumb-jump flycheck go-mode flx counsel magit pinentry use-package))))
+    (counsel-projectile projectile vue-mode chess elpher ag blacken browse-kill-ring dockerfile-mode flycheck-keg smartparens forge sqlformat virtualenvwrapper company pyenv-mode-auto rfc-mode evil restclient dumb-jump flycheck go-mode flx counsel magit pinentry use-package)))
+ '(whitespace-line-column 88))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
- '(flycheck-error ((t (:foreground "brightred" :underline nil))))
- '(flycheck-warning ((t (:underline (:style wave :color "#dfaf8f")))))
- '(font-lock-string-face ((t (:foreground "#868686")))))
+ '(default ((t (:foreground "#b6b6b6" :background "#2e2e2e"))))
+ ;; '(flycheck-error ((t (:foreground "brightred" :underline nil))))
+ ;; '(flycheck-warning ((t (:foreground "#dfaf8f" :underline nil))))
+ '(font-lock-doc-face ((t (:foreground "color-67"))))
+ '(font-lock-string-face ((t (:foreground "#868686"))))
+ '(whitespace-line ((t (:background "gray20" :foreground "brightblack")))))
 (put 'upcase-region 'disabled nil)
 
 (fset 'jla-replace-oracle-struct-types
