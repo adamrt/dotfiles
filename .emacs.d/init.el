@@ -60,8 +60,10 @@
 (global-hl-line-mode)
 
 ;; gpg, ensure minibuffer input instead of fullscreen
+;; (setenv "GPG_AGENT_INFO" nil)
 (use-package pinentry)
-(setq epa-pinentry-mode 'loopback)
+(setq epg-gpg-program "gpg2")
+(setq epg-pinentry-mode 'loopback)
 (pinentry-start)
 
 (use-package browse-kill-ring)
@@ -70,8 +72,8 @@
 (use-package expand-region :bind ("M-m" . er/expand-region))
 (use-package git-timemachine)
 (use-package grayscale-theme)
+(load-theme 'grayscale)
 (use-package persistent-scratch :config (persistent-scratch-setup-default))
-(use-package prettier-js)
 (use-package smartparens :diminish smartparens-mode :config (progn (require 'smartparens-config) (smartparens-global-mode 1) (show-paren-mode t)))
 (use-package smex) ;; Smex enables recent ordering of counsel-M-x
 (use-package syntax-subword :config (global-syntax-subword-mode) (setq syntax-subword-skip-spaces t))
@@ -147,16 +149,25 @@
        (fboundp 'diminish)
        (diminish 'eldoc-mode)))
 
+(defun enable-minor-mode (my-pair)
+  "Enable minor mode if filename match the regexp.  MY-PAIR is a cons cell (regexp . minor-mode)."
+  (if (buffer-file-name)
+      (if (string-match (car my-pair) buffer-file-name)
+          (funcall (cdr my-pair)))))
+
+(use-package prettier-js)
 (use-package web-mode
   :init
   (progn
+    (add-to-list 'auto-mode-alist '("\\.js?\\'" . web-mode))
     (add-to-list 'auto-mode-alist '("\\.vue?\\'" . web-mode))
-    (add-to-list 'auto-mode-alist '("\\.html?\\'" . web-mode)))
+    (add-to-list 'auto-mode-alist '("\\.html?\\'" . web-mode))
+    (add-hook 'web-mode-hook #'(lambda () (enable-minor-mode '("\\.vue?\\'" . prettier-js-mode)))))
   :config
   (setq web-mode-markup-indent-offset 2
         web-mode-css-indent-offset 2
         web-mode-code-indent-offset 2
-        web-mode-script-padding 2 ;; inside <script>
+        web-mode-script-padding 0 ;; inside <script>
         web-mode-enable-auto-indentation nil
         web-mode-engines-alist '(("django" . "\\.html\\'"))))
 
@@ -205,7 +216,21 @@
                 nginx-mode-hook
                 LaTeX-mode-hook))
   (add-hook hook 'flyspell-prog-mode))
-
+(defun find-first-non-ascii-char ()
+  "Find the first non-ascii character from point onwards."
+  (interactive)
+  (let (point)
+    (save-excursion
+      (setq point
+            (catch 'non-ascii
+              (while (not (eobp))
+                (or (eq (char-charset (following-char))
+                        'ascii)
+                    (throw 'non-ascii (point)))
+                (forward-char 1)))))
+    (if point
+        (goto-char point)
+        (message "No non-ascii characters."))))
 (setq org-directory "~/sync/org/"
       org-agenda-files (list org-directory)
       org-default-notes-file "~/sync/org/organizer.org"
@@ -300,7 +325,8 @@ If the CDR is nil, then the buffer is only buried."
 (global-set-key (kbd "C-c b") 'org-switchb)
 (global-set-key (kbd "C-c c") 'org-capture)
 (global-set-key (kbd "C-c l") 'org-store-link)
-(global-set-key (kbd "C-c p") 'ag-project) (global-set-key (kbd "C-x p") 'ag)
+(global-set-key (kbd "C-c p") 'ag-project)
+(global-set-key (kbd "C-x p") 'ag)
 (global-set-key (kbd "C-c P") 'ag-project-regexp)
 (global-set-key (kbd "C-c n") 'cleanup-buffer-or-region)
 (global-set-key (kbd "C-c y") 'bury-buffer)
@@ -313,11 +339,11 @@ If the CDR is nil, then the buffer is only buried."
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
  '(custom-safe-themes
-   (quote
-    ("532a85b472fe3fe4b5791f8d06727066b2678f404a63fb0d51c6360d88f8781e" default)))
+   '("532a85b472fe3fe4b5791f8d06727066b2678f404a63fb0d51c6360d88f8781e" default))
+ '(fill-column 90)
  '(package-selected-packages
-   (quote
-    (counsel-projectile projectile vue-mode chess elpher ag blacken browse-kill-ring dockerfile-mode flycheck-keg smartparens forge sqlformat virtualenvwrapper company pyenv-mode-auto rfc-mode evil restclient dumb-jump flycheck go-mode flx counsel magit pinentry use-package)))
+   '(sql-indent selectrum-prescient selectrum counsel-projectile projectile vue-mode elpher ag blacken browse-kill-ring dockerfile-mode flycheck-keg smartparens forge sqlformat virtualenvwrapper company pyenv-mode-auto rfc-mode evil restclient dumb-jump flycheck go-mode flx counsel magit pinentry use-package))
+ '(prettier-js-width-mode 'fill)
  '(whitespace-line-column 88))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
@@ -325,8 +351,6 @@ If the CDR is nil, then the buffer is only buried."
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
  '(default ((t (:foreground "#b6b6b6" :background "#2e2e2e"))))
- ;; '(flycheck-error ((t (:foreground "brightred" :underline nil))))
- ;; '(flycheck-warning ((t (:foreground "#dfaf8f" :underline nil))))
  '(font-lock-doc-face ((t (:foreground "color-67"))))
  '(font-lock-string-face ((t (:foreground "#868686"))))
  '(whitespace-line ((t (:background "gray20" :foreground "brightblack")))))
@@ -336,3 +360,4 @@ If the CDR is nil, then the buffer is only buried."
       "\C-[%NUMBER\C-mfloat65\C-?4\C-m!\C-r{\C-m\C-n\C-a\C-[%VARCHAR2\C-mstring\C-m!\C-r{\C-m\C-n\C-a\C-[% DATE\C-m time.Time\C-m!")
 (fset 'jla-add-db-struct-tags
       "\C-i\C-@\C-s \C-b\C-[w\C-e `db:\"\C-y\"\C-n\C-a")
+(put 'downcase-region 'disabled nil)

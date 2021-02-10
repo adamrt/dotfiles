@@ -8,7 +8,8 @@ if [ -n "$BASH_VERSION" ]; then
 fi
 
 export NODEJS_HOME=/usr/local/lib/node/nodejs
-export PATH=$NODEJS_HOME/bin:$PATH
+export GO_HOME=/home/adam/go
+export PATH=$GO_HOME/bin:$NODEJS_HOME/bin:$PATH
 
 # Setup ssh keys at login
 if [ ! -S ~/.ssh/ssh_auth_sock ]; then
