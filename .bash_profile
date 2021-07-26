@@ -9,7 +9,7 @@ fi
 
 export NODEJS_HOME=/usr/local/lib/node/nodejs
 export GO_HOME=/home/adam/go
-export PATH=$GO_HOME/bin:$NODEJS_HOME/bin:$PATH
+export PATH=$HOME/.local/bin:$GO_HOME/bin:$NODEJS_HOME/bin:$PATH
 
 # Setup ssh keys at login
 if [ ! -S ~/.ssh/ssh_auth_sock ]; then

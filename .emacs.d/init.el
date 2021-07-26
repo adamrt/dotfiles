@@ -111,7 +111,7 @@
   :ensure t
   :init (global-flycheck-mode)
   :config
-  (setq flycheck-python-flake8-executable "python3"
+  (setq flycheck-python-flake8-executable "python3.9"
         flycheck-disabled-checkers '(python-mypy)))
 
 (use-package ag
@@ -119,15 +119,18 @@
   (add-hook 'ag-mode-hook 'toggle-truncate-lines)
   (add-hook 'ag-mode-hook 'winnow-mode)
   (setq ag-highlight-search nil ag-reuse-buffers 't))
-(use-package wgrep-ag :config (autoload 'wgrep-ag-setup "wgrep-ag") (add-hook 'ag-mode-hook 'wgrep-ag-setup))
+
+(use-package wgrep-ag
+  :config
+  (setq wgrep-auto-save-buffer t)
+  (autoload 'wgrep-ag-setup "wgrep-ag")
+  (add-hook 'ag-mode-hook 'wgrep-ag-setup))
+
 (use-package winnow) ;; filtering ag results buffer
 
 (use-package magit
   :bind (("C-x g" . magit-status))
   :init (delete 'Git vc-handled-backends))
-
-(use-package forge
-  :after magit)
 
 (use-package rcirc :init (progn (setq rcirc-default-nick "adamrt" rcirc-server-alist '(("irc.freenode.net" :port 6697 :encryption tls :channels ("#openbsd"))))))
 (use-package sane-term :bind (("C-x t" . sane-term) ("C-x T" . sane-term-create)))

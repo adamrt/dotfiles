@@ -7,11 +7,14 @@
  (magit-cherry-pick
   ("--ff")
   nil)
- (magit-commit nil)
+ (magit-commit nil
+               ("--verbose"))
  (magit-diff
   ("--no-ext-diff" "--stat"))
  (magit-dispatch nil)
- (magit-fetch nil)
+ (magit-fetch
+  ("--prune")
+  nil)
  (magit-gitignore nil)
  (magit-log
   ("-n256" "--graph" "--decorate")
@@ -31,7 +34,9 @@
  (magit-revert
   ("--edit")
   nil)
- (magit-show-refs nil)
+ (magit-show-refs
+  ("--merged=develop"))
  (magit-stash nil)
  (magit-submodule nil)
- (magit-tag nil))
+ (magit-tag nil)
+ (transient:magit-show-refs:--merged= "develop"))

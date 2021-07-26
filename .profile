@@ -2,9 +2,13 @@
 #
 # sh/ksh initialization
 
-PATH=$HOME/bin:$HOME/go/bin:/bin:/sbin:/usr/bin:/usr/sbin:/usr/X11R6/bin:/usr/local/bin:/usr/local/sbin:/usr/games
-export PATH HOME TERM
+# Only for OpenBSD. Reverse the logic next time on OpenBSD
+if [[ `uname` != 'Linux ']]; then
+    export ONLY_OPENBSD=1
+    PATH=$HOME/bin:$HOME/go/bin:/bin:/sbin:/usr/bin:/usr/sbin:/usr/X11R6/bin:/usr/local/bin:/usr/local/sbin:/usr/games
+    export PATH HOME TERM
 
-# Set non-login shells to evaluate .kshrc
-ENV=$HOME/.kshrc
-export ENV
+    # Set non-login shells to evaluate .kshrc
+    ENV=$HOME/.kshrc
+    export ENV
+fi
