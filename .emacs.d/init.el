@@ -4,7 +4,7 @@
 
 ;;; Packages
 (when (display-graphic-p)
-  (add-to-list 'default-frame-alist '(font . "DejaVu Sans Mono-18")))
+  (add-to-list 'default-frame-alist '(font . "Hack-18")))
 
 (require 'package)
 (setq package-enable-at-startup nil)
@@ -71,8 +71,6 @@
 (use-package diminish)
 (use-package expand-region :bind ("M-m" . er/expand-region))
 (use-package git-timemachine)
-(use-package grayscale-theme)
-(load-theme 'grayscale)
 (use-package persistent-scratch :config (persistent-scratch-setup-default))
 (use-package smartparens :diminish smartparens-mode :config (progn (require 'smartparens-config) (smartparens-global-mode 1) (show-paren-mode t)))
 (use-package smex) ;; Smex enables recent ordering of counsel-M-x
@@ -336,18 +334,7 @@ If the CDR is nil, then the buffer is only buried."
 (global-set-key (kbd "C-x C-b") 'ibuffer)
 (global-set-key (kbd "C-c g") 'dumb-jump-go)
 (global-set-key (kbd "C-j") (lambda () (interactive) (join-line -1)))
-(custom-set-variables
- ;; custom-set-variables was added by Custom.
- ;; If you edit it by hand, you could mess it up, so be careful.
- ;; Your init file should contain only one such instance.
- ;; If there is more than one, they won't work right.
- '(custom-safe-themes
-   '("532a85b472fe3fe4b5791f8d06727066b2678f404a63fb0d51c6360d88f8781e" default))
- '(fill-column 90)
- '(package-selected-packages
-   '(sql-indent selectrum-prescient selectrum counsel-projectile projectile vue-mode elpher ag blacken browse-kill-ring dockerfile-mode flycheck-keg smartparens forge sqlformat virtualenvwrapper company pyenv-mode-auto rfc-mode evil restclient dumb-jump flycheck go-mode flx counsel magit pinentry use-package))
- '(prettier-js-width-mode 'fill)
- '(whitespace-line-column 88))
+
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
@@ -357,10 +344,14 @@ If the CDR is nil, then the buffer is only buried."
  '(font-lock-doc-face ((t (:foreground "color-67"))))
  '(font-lock-string-face ((t (:foreground "#868686"))))
  '(whitespace-line ((t (:background "gray20" :foreground "brightblack")))))
-(put 'upcase-region 'disabled nil)
+(custom-set-variables
+ ;; custom-set-variables was added by Custom.
+ ;; If you edit it by hand, you could mess it up, so be careful.
+ ;; Your init file should contain only one such instance.
+ ;; If there is more than one, they won't work right.
+ '(custom-safe-themes
+   '("532a85b472fe3fe4b5791f8d06727066b2678f404a63fb0d51c6360d88f8781e" default)))
 
-(fset 'jla-replace-oracle-struct-types
-      "\C-[%NUMBER\C-mfloat65\C-?4\C-m!\C-r{\C-m\C-n\C-a\C-[%VARCHAR2\C-mstring\C-m!\C-r{\C-m\C-n\C-a\C-[% DATE\C-m time.Time\C-m!")
-(fset 'jla-add-db-struct-tags
-      "\C-i\C-@\C-s \C-b\C-[w\C-e `db:\"\C-y\"\C-n\C-a")
-(put 'downcase-region 'disabled nil)
+
+(use-package grayscale-theme)
+(load-theme 'grayscale)
