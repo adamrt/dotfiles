@@ -23,5 +23,5 @@ PS1='${debian_chroot:+($debian_chroot)}\u@\h:\w\$ '
 export LESSHISTFILE=-
 
 # GPG
-export GPG_TTY=$(tty)
-gpgconf --launch gpg-agent
+# export GPG_TTY=$(tty)
+# gpgconf --launch gpg-agent

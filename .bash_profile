@@ -7,17 +7,13 @@ if [ -n "$BASH_VERSION" ]; then
     fi
 fi
 
-export NODEJS_HOME=/usr/local/lib/node/nodejs
-export GO_HOME="$HOME/go"
-export CARGO_HOME="$HOME/.cargo"
-
-export PATH=$HOME/.local/bin:$GO_HOME/bin:$NODEJS_HOME/bin:$CARGO_HOME/bin:$PATH
+export PATH=$HOME/bin:$HOME/.local/bin:$HOME/go/bin:$PATH
 
 
-# Setup ssh keys at login
-if [ ! -S ~/.ssh/ssh_auth_sock ]; then
-  eval `ssh-agent`
-  ln -sf "$SSH_AUTH_SOCK" ~/.ssh/ssh_auth_sock
-fi
-export SSH_AUTH_SOCK=~/.ssh/ssh_auth_sock
-ssh-add -l > /dev/null || ssh-add
+# # Setup ssh keys at login
+# if [ ! -S ~/.ssh/ssh_auth_sock ]; then
+#   eval `ssh-agent`
+#   ln -sf "$SSH_AUTH_SOCK" ~/.ssh/ssh_auth_sock
+# fi
+# export SSH_AUTH_SOCK=~/.ssh/ssh_auth_sock
+# ssh-add -l > /dev/null || ssh-add
