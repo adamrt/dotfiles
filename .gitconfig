@@ -12,3 +12,5 @@
         gpgSign = true
 [github]
         user = adamrt
+[init]
+	defaultBranch = master

@@ -1,4 +1,5 @@
 ((forge-dispatch nil)
+ (git-timemachine-help nil)
  (magit-am
   ("--3way"))
  (magit-blame
@@ -12,12 +13,14 @@
  (magit-diff
   ("--no-ext-diff" "--stat"))
  (magit-dispatch nil)
- (magit-fetch
-  ("--prune")
-  nil)
+ (magit-fetch nil
+              ("--prune"))
  (magit-gitignore nil)
  (magit-log
   ("-n256" "--graph" "--decorate")
+  ("-n256" "--graph" "--decorate" "--show-signature")
+  ("-n256" "--graph" "--decorate" "--show-signature" "++header")
+  ("-n256" "--graph" "--decorate" "--stat")
   ("-n256" "--decorate")
   (("--" "simplex/sales_order_cmd_generator.go"))
   ("-n256" "--graph" "--color" "--decorate"))
@@ -29,7 +32,9 @@
  (magit-push nil
              ("--force-with-lease")
              ("--force"))
- (magit-rebase nil)
+ (magit-rebase
+  ("--autostash")
+  nil)
  (magit-reset nil)
  (magit-revert
   ("--edit")

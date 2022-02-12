@@ -3,13 +3,9 @@
 ;;; Commentary:
 
 ;;; Packages
-(when (display-graphic-p)
-  (add-to-list 'default-frame-alist '(font . "Hack-18")))
-
 (require 'package)
 (setq package-enable-at-startup nil)
 (add-to-list 'package-archives '("melpa" . "http://melpa.org/packages/"))
-;; (add-to-list 'package-archives '("gnu" . "http://elpa.gnu.org/packages/"))
 (package-initialize)
 (unless (package-installed-p 'use-package)
   (package-refresh-contents)
@@ -19,22 +15,16 @@
 (setq use-package-always-ensure t)
 
 ;; Adjust garbage collection thresholds during startup, and thereafter
-;; (let ((normal-gc-cons-threshold (* 20 1024 1024))
-;;       (init-gc-cons-threshold (* 128 1024 1024)))
-;;   (setq gc-cons-threshold init-gc-cons-threshold)
-;;   (add-hook 'emacs-startup-hook
-;;             (lambda () (setq gc-cons-threshold normal-gc-cons-threshold))))
+(let ((normal-gc-cons-threshold (* 20 1024 1024))
+      (init-gc-cons-threshold (* 128 1024 1024)))
+  (setq gc-cons-threshold init-gc-cons-threshold)
+  (add-hook 'emacs-startup-hook
+            (lambda () (setq gc-cons-threshold normal-gc-cons-threshold))))
 
 ;; Disable UI
-(when (fboundp 'menu-bar-mode) (menu-bar-mode 0))
+(when (fboundp 'menu-bar-mode) (menu-bar-mode 1))
 (when (fboundp 'tool-bar-mode) (tool-bar-mode 0))
 (when (fboundp 'scroll-bar-mode) (scroll-bar-mode 0))
-
-;; Paths
-(setq exec-path (append exec-path '("/usr/local/go/bin")))
-(setq exec-path (append exec-path '("~/go/bin")))
-(setq exec-path (append exec-path '("~/.fzf/bin")))
-(setq exec-path (append exec-path '("~/.local/bin")))
 
 ;; Disable backups, autosaves and lock files
 (setq make-backup-files nil
@@ -52,19 +42,19 @@
 (setq large-file-warning-threshold (* 1024 1000 100))
 (setq inhibit-startup-message t)
 (setq line-number-mode t)
-(setq tab-width 4) ; or any other preferred value
 (setq-default truncate-lines t)
+(setq c-basic-offset 4)
+;; (setq c-default-style "bsd")
 
 ;; Minor modes
-(show-paren-mode 1)
+;; (show-paren-mode 0) ;; Enabled by smartparens
 (global-hl-line-mode)
 
-;; gpg, ensure minibuffer input instead of fullscreen
-;; (setenv "GPG_AGENT_INFO" nil)
-(use-package pinentry)
-(setq epg-gpg-program "gpg2")
-(setq epg-pinentry-mode 'loopback)
-(pinentry-start)
+
+(use-package atom-one-dark-theme
+  :config
+  (load-theme 'atom-one-dark t))
+
 
 (use-package browse-kill-ring)
 (use-package change-inner :bind (("M-i" . change-inner) ("M-o" . change-outer)))
@@ -72,49 +62,57 @@
 (use-package expand-region :bind ("M-m" . er/expand-region))
 (use-package git-timemachine)
 (use-package persistent-scratch :config (persistent-scratch-setup-default))
-(use-package smartparens :diminish smartparens-mode :config (progn (require 'smartparens-config) (smartparens-global-mode 1) (show-paren-mode t)))
+;; (use-package smartparens :diminish smartparens-mode :config (progn (require 'smartparens-config) (smartparens-global-mode 1) (show-paren-mode t)))
 (use-package smex) ;; Smex enables recent ordering of counsel-M-x
 (use-package syntax-subword :config (global-syntax-subword-mode) (setq syntax-subword-skip-spaces t))
 (use-package undo-tree :diminish undo-tree-mode :init (global-undo-tree-mode))
 (use-package which-key :init (progn (which-key-mode)) :diminish which-key-mode)
-
 (use-package yaml-mode)
 (use-package nginx-mode :init (progn (add-to-list 'auto-mode-alist '("nginx" . nginx-mode))))
 (use-package dockerfile-mode)
 (use-package php-mode)
-(use-package terraform-mode :config (add-hook 'terraform-mode-hook #'terraform-format-on-save-mode))
+;; (use-package terraform-mode :config (add-hook 'terraform-mode-hook #'terraform-format-on-save-mode))
+
+;; gpg, ensure minibuffer input instead of fullscreen
+(use-package pinentry
+  :config
+  (setq epg-gpg-program "gpg2")
+  (setq epg-pinentry-mode 'loopback))
+(pinentry-start)
+
+;; Python formatter
 (use-package blacken
   :init
   (progn
     (add-hook 'python-mode-hook '(lambda() (set-fill-column 88)))
     (add-hook 'python-mode-hook 'blacken-mode)))
 
-;; This keycord overlaps ag
-;; (use-package projectile
-;;   :ensure t
-;;   :config
-;;   (define-key projectile-mode-map (kbd "C-c p") 'projectile-command-map)
-;;   (setq projectile-project-search-path '("~/src/"))
-;;   (projectile-mode +1))
+;; Shaders
+(use-package glsl-mode
+  :init
+  (progn
+    (add-to-list 'auto-mode-alist '("\\.shader?\\'" . glsl-mode))))
 
-;; Clang stuff
-(defun clang-format-save-hook-for-this-buffer ()
-  "Create a buffer local save hook."
-  (add-hook 'before-save-hook
-            (lambda ()
-              (when (locate-dominating-file "." ".clang-format")
-                (clang-format-buffer))
-              ;; Continue to save.
-              nil)
-            nil
-            ;; Buffer local hook.
-            t))
+(use-package lsp-mode
+  :init
+  (setq lsp-keymap-prefix "C-c l")
+  :hook ((c-mode . lsp)
+         (c++-mode . lsp)
+         (go-mode . lsp)
+         (lsp-mode . lsp-enable-which-key-integration))
+  :commands lsp
+  :config
+  (setq
+   lsp-clients-clangd-args '("-j=4" "-background-index" "-log=error" "--header-insertion-decorators=1" "--suggest-missing-includes=1" "--clang-tidy" "--header-insertion=iwyu" "--compile-commands-dir=build")))
 
-;; Run this for each mode you want to use the hook.
-(add-hook 'c-mode-hook (lambda () (clang-format-save-hook-for-this-buffer)))
-(add-hook 'c++-mode-hook (lambda () (clang-format-save-hook-for-this-buffer)))
-(add-hook 'glsl-mode-hook (lambda () (clang-format-save-hook-for-this-buffer)))
-
+(use-package lsp-ui
+  :commands lsp-ui-mode
+  :config
+  ;; (setq lsp-ui-doc-enable nil)
+  (define-key lsp-ui-mode-map (kbd "M-?") 'lsp-ui-peek-find-references)
+  (define-key lsp-ui-mode-map (kbd "M-.") 'lsp-ui-peek-find-definitions))
+(use-package lsp-ivy :commands lsp-ivy-workspace-symbol)
+;; (use-package lsp-treemacs :commands lsp-treemacs-errors-list)
 
 (use-package go-mode
   :init
@@ -126,10 +124,9 @@
 
 (use-package flycheck
   :ensure t
-  :init (global-flycheck-mode)
-  :config
-  (setq flycheck-python-flake8-executable "python3.9"
-        flycheck-disabled-checkers '(python-mypy)))
+  :init (global-flycheck-mode))
+;; :config
+;; (setq flycheck-disabled-checkers '(python-mypy c/c++-gcc)))
 
 (use-package ag
   :config
@@ -161,8 +158,8 @@
   (add-hook 'before-save-hook #'whitespace-cleanup)
   :diminish whitespace-mode
   :config
-  (setq whitespace-line-column 80)
-  (setq whitespace-style '(face empty trailing lines-tail)))
+  ;; (setq whitespace-line-column 80)
+  (setq whitespace-style '(face empty trailing)))
 
 (eval-after-load 'eldoc-mode
   '(if
@@ -201,6 +198,8 @@
          ("C-c f"   . counsel-git)
          ("C-c /"   . counsel-ag)))
 
+
+
 (use-package flx)
 (use-package ivy
   :defer 0.1
@@ -226,6 +225,9 @@
                 ruby-mode-hook
                 yaml-mode
                 python-mode-hook
+                c-mode-hook
+                go-mode-hook
+                c++-mode-hook
                 shell-mode-hook
                 php-mode-hook
                 css-mode-hook
@@ -250,11 +252,13 @@
                 (forward-char 1)))))
     (if point
         (goto-char point)
-        (message "No non-ascii characters."))))
+      (message "No non-ascii characters."))))
+
 (setq org-directory "~/sync/org/"
       org-agenda-files (list org-directory)
       org-default-notes-file "~/sync/org/organizer.org"
       org-clock-persist 'history)
+
 ;; org-capture-templates
 ;; '(("w" "Work" entry (file+headline "work.org" "Tasks") "* TODO %?\n  %i\n %t\n %a")
 ;;   ("e" "Even" entry (file+headline "even.org" "Tasks") "* TODO %?\n  %i\n %t\n %a")
@@ -310,7 +314,7 @@ If the CDR is nil, then the buffer is only buried."
 (keep-buffers-mode 1)
 
 (defun cleanup-buffer-or-region ()
-  "Untabifies, indents and deletes trailing whitespace from buffer or region."
+  "Un-tabify, indent and deletes trailing whitespace from buffer or region."
   (interactive)
   (save-excursion
     (unless (region-active-p)
@@ -351,26 +355,30 @@ If the CDR is nil, then the buffer is only buried."
 (global-set-key (kbd "C-c n") 'cleanup-buffer-or-region)
 (global-set-key (kbd "C-c y") 'bury-buffer)
 (global-set-key (kbd "C-x C-b") 'ibuffer)
-(global-set-key (kbd "C-c g") 'dumb-jump-go)
+;; (global-set-key (kbd "C-c g") 'dumb-jump-go)
 (global-set-key (kbd "C-j") (lambda () (interactive) (join-line -1)))
+(setq prettier-js-args '(
+                         "--print-width" "88"))
+;;(when (display-graphic-p)
+;; (add-to-list 'default-frame-alist '(font . "JetBrains Mono-14"))
+;; (add-to-list 'default-frame-alist '(line-spacing . 0.2))
+;; (setq-default line-spacing 0.1)
 
-(custom-set-faces
- ;; custom-set-faces was added by Custom.
- ;; If you edit it by hand, you could mess it up, so be careful.
- ;; Your init file should contain only one such instance.
- ;; If there is more than one, they won't work right.
- '(default ((t (:foreground "#b6b6b6" :background "#2e2e2e"))))
- '(font-lock-doc-face ((t (:foreground "color-67"))))
- '(font-lock-string-face ((t (:foreground "#868686"))))
- '(whitespace-line ((t (:background "gray20" :foreground "brightblack")))))
+(provide 'init)
+;;; init.el ends here
 (custom-set-variables
  ;; custom-set-variables was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
  '(custom-safe-themes
-   '("532a85b472fe3fe4b5791f8d06727066b2678f404a63fb0d51c6360d88f8781e" default)))
-
-
-(use-package grayscale-theme)
-(load-theme 'grayscale)
+   '("171d1ae90e46978eb9c342be6658d937a83aaa45997b1d7af7657546cae5985b" "90a6f96a4665a6a56e36dec873a15cbedf761c51ec08dd993d6604e32dd45940" "7397cc72938446348521d8061d3f2e288165f65a2dbb6366bb666224de2629bb" "9f1d0627e756e58e0263fe3f00b16d8f7b2aca0882faacdc20ddd56a95acb7c2" "4c56af497ddf0e30f65a7232a8ee21b3d62a8c332c6b268c81e9ea99b11da0d3" "f5b6be56c9de9fd8bdd42e0c05fecb002dedb8f48a5f00e769370e4517dde0e8" "fee7287586b17efbfda432f05539b58e86e059e78006ce9237b8732fde991b4c" "0710b0bdd59c8a7aacf0640591b38fcad5978a0fcfff3fdd999e63499ada8e3e" "c7eb06356fd16a1f552cfc40d900fe7326ae17ae7578f0ef5ba1edd4fdd09e58" "3b8284e207ff93dfc5e5ada8b7b00a3305351a3fb222782d8033a400a48eca48" "37768a79b479684b0756dec7c0fc7652082910c37d8863c35b702db3f16000f8" default))
+ '(package-selected-packages
+   '(atom-one-dark-theme material-theme modus-themes solarized-theme ample-theme ample-zen-theme zenburn-theme yasnippet yaml-mode winnow which-key wgrep-ag web-mode vterm use-package undo-tree terraform-mode syntax-subword smex smartparens sane-term prettier-js pinentry php-mode persistent-scratch nordless-theme nord-theme nhexl-mode nginx-mode magit lsp-ui lsp-ivy grayscale-theme google-c-style go-mode glsl-mode git-timemachine flycheck flx dumb-jump dockerfile-mode diminish dap-mode counsel company clang-format change-inner browse-kill-ring blacken ag))
+ '(tool-bar-mode nil))
+(custom-set-faces
+ ;; custom-set-faces was added by Custom.
+ ;; If you edit it by hand, you could mess it up, so be careful.
+ ;; Your init file should contain only one such instance.
+ ;; If there is more than one, they won't work right.
+'(default ((t (:family "JetBrains Mono" :foundry "JB" :slant normal :weight normal :height 158 :width normal)))))

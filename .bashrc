@@ -22,6 +22,8 @@ PS1='${debian_chroot:+($debian_chroot)}\u@\h:\w\$ '
 
 export LESSHISTFILE=-
 
+export DOCKER_HOST=unix:///run/user/1000/docker.sock
+
 # GPG
-# export GPG_TTY=$(tty)
-# gpgconf --launch gpg-agent
+export GPG_TTY=$(tty)
+gpgconf --launch gpg-agent
