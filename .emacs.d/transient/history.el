@@ -5,9 +5,8 @@
  (magit-blame
   ("-w"))
  (magit-branch nil)
- (magit-cherry-pick
-  ("--ff")
-  nil)
+ (magit-cherry-pick nil
+                    ("--ff"))
  (magit-commit nil
                ("--verbose"))
  (magit-diff

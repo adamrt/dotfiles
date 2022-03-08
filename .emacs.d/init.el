@@ -92,14 +92,9 @@
   :init
   (progn
     (add-to-list 'auto-mode-alist '("\\.shader?\\'" . glsl-mode))))
-
+(yas-global-mode)
 (use-package lsp-mode
-  :init
-  (setq lsp-keymap-prefix "C-c l")
-  :hook ((c-mode . lsp)
-         (c++-mode . lsp)
-         (go-mode . lsp)
-         (lsp-mode . lsp-enable-which-key-integration))
+  :hook ((c-mode c++-mode python-mode go-mode web-mode js-mode) . lsp-deferred)
   :commands lsp
   :config
   (setq
@@ -108,11 +103,12 @@
 (use-package lsp-ui
   :commands lsp-ui-mode
   :config
-  ;; (setq lsp-ui-doc-enable nil)
-  (define-key lsp-ui-mode-map (kbd "M-?") 'lsp-ui-peek-find-references)
-  (define-key lsp-ui-mode-map (kbd "M-.") 'lsp-ui-peek-find-definitions))
-(use-package lsp-ivy :commands lsp-ivy-workspace-symbol)
-;; (use-package lsp-treemacs :commands lsp-treemacs-errors-list)
+  (setq lsp-ui-doc-enable nil)
+  (setq lsp-ui-doc-header t)
+  (setq lsp-ui-doc-include-signature t)
+  (setq lsp-ui-doc-border (face-foreground 'default))
+  (setq lsp-ui-sideline-show-code-actions t)
+  (setq lsp-ui-sideline-delay 0.05))
 
 (use-package go-mode
   :init
@@ -374,11 +370,11 @@ If the CDR is nil, then the buffer is only buried."
  '(custom-safe-themes
    '("171d1ae90e46978eb9c342be6658d937a83aaa45997b1d7af7657546cae5985b" "90a6f96a4665a6a56e36dec873a15cbedf761c51ec08dd993d6604e32dd45940" "7397cc72938446348521d8061d3f2e288165f65a2dbb6366bb666224de2629bb" "9f1d0627e756e58e0263fe3f00b16d8f7b2aca0882faacdc20ddd56a95acb7c2" "4c56af497ddf0e30f65a7232a8ee21b3d62a8c332c6b268c81e9ea99b11da0d3" "f5b6be56c9de9fd8bdd42e0c05fecb002dedb8f48a5f00e769370e4517dde0e8" "fee7287586b17efbfda432f05539b58e86e059e78006ce9237b8732fde991b4c" "0710b0bdd59c8a7aacf0640591b38fcad5978a0fcfff3fdd999e63499ada8e3e" "c7eb06356fd16a1f552cfc40d900fe7326ae17ae7578f0ef5ba1edd4fdd09e58" "3b8284e207ff93dfc5e5ada8b7b00a3305351a3fb222782d8033a400a48eca48" "37768a79b479684b0756dec7c0fc7652082910c37d8863c35b702db3f16000f8" default))
  '(package-selected-packages
-   '(atom-one-dark-theme material-theme modus-themes solarized-theme ample-theme ample-zen-theme zenburn-theme yasnippet yaml-mode winnow which-key wgrep-ag web-mode vterm use-package undo-tree terraform-mode syntax-subword smex smartparens sane-term prettier-js pinentry php-mode persistent-scratch nordless-theme nord-theme nhexl-mode nginx-mode magit lsp-ui lsp-ivy grayscale-theme google-c-style go-mode glsl-mode git-timemachine flycheck flx dumb-jump dockerfile-mode diminish dap-mode counsel company clang-format change-inner browse-kill-ring blacken ag))
+   '(ac-capf company-box atom-one-dark-theme material-theme modus-themes solarized-theme ample-theme ample-zen-theme zenburn-theme yasnippet yaml-mode winnow which-key wgrep-ag web-mode vterm use-package undo-tree terraform-mode syntax-subword smex smartparens sane-term prettier-js pinentry php-mode persistent-scratch nordless-theme nord-theme nhexl-mode nginx-mode magit lsp-ui lsp-ivy grayscale-theme google-c-style go-mode glsl-mode git-timemachine flycheck flx dumb-jump dockerfile-mode diminish dap-mode counsel company clang-format change-inner browse-kill-ring blacken ag))
  '(tool-bar-mode nil))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
-'(default ((t (:family "JetBrains Mono" :foundry "JB" :slant normal :weight normal :height 158 :width normal)))))
+ '(default ((t (:family "JetBrains Mono" :foundry "JB" :slant normal :weight normal :height 158 :width normal)))))
