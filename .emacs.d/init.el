@@ -2,6 +2,9 @@
 ;;; Code:
 ;;; Commentary:
 
+;; Fullscreen
+(add-to-list 'default-frame-alist '(fullscreen . maximized))
+
 ;;; Packages
 (require 'package)
 (setq package-enable-at-startup nil)
@@ -14,17 +17,11 @@
   (require 'use-package))
 (setq use-package-always-ensure t)
 
-;; Adjust garbage collection thresholds during startup, and thereafter
-(let ((normal-gc-cons-threshold (* 20 1024 1024))
-      (init-gc-cons-threshold (* 128 1024 1024)))
-  (setq gc-cons-threshold init-gc-cons-threshold)
-  (add-hook 'emacs-startup-hook
-            (lambda () (setq gc-cons-threshold normal-gc-cons-threshold))))
-
 ;; Disable UI
-(when (fboundp 'menu-bar-mode) (menu-bar-mode 1))
+(when (fboundp 'menu-bar-mode) (menu-bar-mode 0))
 (when (fboundp 'tool-bar-mode) (tool-bar-mode 0))
 (when (fboundp 'scroll-bar-mode) (scroll-bar-mode 0))
+
 
 ;; Disable backups, autosaves and lock files
 (setq make-backup-files nil
@@ -37,41 +34,51 @@
 (defalias 'yes-or-no-p 'y-or-n-p)
 (global-auto-revert-mode t) ;; Auto refresh buffers
 (set-default 'indent-tabs-mode nil) ;; Don't use tabs
-(set-fill-column 80)
-(setq default-directory "~/")
-(setq large-file-warning-threshold (* 1024 1000 100))
-(setq inhibit-startup-message t)
-(setq line-number-mode t)
-(setq-default truncate-lines t)
-(setq c-basic-offset 4)
-;; (setq c-default-style "bsd")
-
-;; Minor modes
-;; (show-paren-mode 0) ;; Enabled by smartparens
-(global-hl-line-mode)
-
+(setq default-directory "~/"
+      large-file-warning-threshold (* 1024 1000 100)
+      inhibit-startup-message t
+      line-number-mode t
+      c-basic-offset 4)
+;; Use setq-default when buffer local variables
+(setq-default set-fill-column 80
+              truncate-lines t)
 
 (use-package atom-one-dark-theme
   :config
   (load-theme 'atom-one-dark t))
 
+(global-hl-line-mode)
+(yas-global-mode)
 
-(use-package browse-kill-ring)
-(use-package change-inner :bind (("M-i" . change-inner) ("M-o" . change-outer)))
-(use-package diminish)
-(use-package expand-region :bind ("M-m" . er/expand-region))
-(use-package git-timemachine)
-(use-package persistent-scratch :config (persistent-scratch-setup-default))
-;; (use-package smartparens :diminish smartparens-mode :config (progn (require 'smartparens-config) (smartparens-global-mode 1) (show-paren-mode t)))
 (use-package smex) ;; Smex enables recent ordering of counsel-M-x
-(use-package syntax-subword :config (global-syntax-subword-mode) (setq syntax-subword-skip-spaces t))
-(use-package undo-tree :diminish undo-tree-mode :init (global-undo-tree-mode))
-(use-package which-key :init (progn (which-key-mode)) :diminish which-key-mode)
-(use-package yaml-mode)
-(use-package nginx-mode :init (progn (add-to-list 'auto-mode-alist '("nginx" . nginx-mode))))
-(use-package dockerfile-mode)
+(use-package winnow) ;; filtering ag results buffer
 (use-package php-mode)
-;; (use-package terraform-mode :config (add-hook 'terraform-mode-hook #'terraform-format-on-save-mode))
+(use-package diminish)
+(use-package yaml-mode)
+(use-package dockerfile-mode)
+(use-package git-timemachine)
+(use-package browse-kill-ring)
+(use-package expand-region :bind ("M-m" . er/expand-region))
+(use-package change-inner :bind (("M-i" . change-inner) ("M-o" . change-outer)))
+(use-package persistent-scratch :config (persistent-scratch-setup-default))
+(use-package syntax-subword :config (global-syntax-subword-mode) (setq syntax-subword-skip-spaces t))
+(use-package which-key :init (progn (which-key-mode)) :diminish which-key-mode)
+(use-package nginx-mode :init (progn (add-to-list 'auto-mode-alist '("nginx" . nginx-mode))))
+(use-package rcirc :init (progn (setq rcirc-default-nick "adamrt" rcirc-server-alist '(("irc.freenode.net" :port 6697 :encryption tls :channels ("#openbsd"))))))
+
+(use-package vterm
+  :bind (("C-x t" . vterm)
+         ("C-x T" . sane-term-create)))
+
+;; (use-package sane-term
+;;   :bind (("C-x t" . vterm)
+;;          ("C-x T" . sane-term-create)))
+
+(use-package undo-tree
+  :diminish undo-tree-mode
+  :init (global-undo-tree-mode)
+  :config
+  (setq undo-tree-auto-save-history nil))
 
 ;; gpg, ensure minibuffer input instead of fullscreen
 (use-package pinentry
@@ -87,28 +94,58 @@
     (add-hook 'python-mode-hook '(lambda() (set-fill-column 88)))
     (add-hook 'python-mode-hook 'blacken-mode)))
 
-;; Shaders
-(use-package glsl-mode
-  :init
-  (progn
-    (add-to-list 'auto-mode-alist '("\\.shader?\\'" . glsl-mode))))
-(yas-global-mode)
+;; Currently disabled as something conflict with lsp-mode and I don't
+;; want to spend time to figure it out now.
+;;
+;; (use-package flycheck
+;; :ensure t :init (global-flycheck-mode)) :config (setq
+;; flycheck-disabled-checkers '(python-mypy c/c++-gcc)))
+
+;; ..
+
 (use-package lsp-mode
-  :hook ((c-mode c++-mode python-mode go-mode web-mode js-mode) . lsp-deferred)
+  :hook ((c-mode c++-mode python-mode go-mode web-mode js-mode rust-mode) . lsp-deferred)
   :commands lsp
   :config
-  (setq
-   lsp-clients-clangd-args '("-j=4" "-background-index" "-log=error" "--header-insertion-decorators=1" "--suggest-missing-includes=1" "--clang-tidy" "--header-insertion=iwyu" "--compile-commands-dir=build")))
+  (setq lsp-clients-clangd-args '("-j=4" "-background-index" "--log=verbose" "--clang-tidy" "--enable-config" "--header-insertion-decorators=1" "--suggest-missing-includes=1" "--header-insertion=iwyu"))
+  (setq lsp-clangd-binary-path "/usr/bin/clangd")
+  (setq clang-format-executable "/usr/bin/clang-format"))
 
-(use-package lsp-ui
-  :commands lsp-ui-mode
-  :config
-  (setq lsp-ui-doc-enable nil)
-  (setq lsp-ui-doc-header t)
-  (setq lsp-ui-doc-include-signature t)
-  (setq lsp-ui-doc-border (face-foreground 'default))
-  (setq lsp-ui-sideline-show-code-actions t)
-  (setq lsp-ui-sideline-delay 0.05))
+(add-hook 'c-mode-common-hook
+          (lambda ()
+            (add-hook 'before-save-hook 'clang-format-buffer nil 'make-it-local)))
+
+
+;; (use-package lsp-ivy :commands lsp-ivy-workspace-symbol)
+;; (use-package lsp-treemacs :commands lsp-treemacs-errors-list)
+
+;; (use-package lsp-ui
+;;   :requires lsp-mode
+;;   :config
+
+;;   (setq lsp-ui-doc-enable t
+;;         lsp-ui-doc-use-childframe t
+;;         lsp-ui-doc-position 'top
+;;         lsp-ui-doc-include-signature t
+;;         lsp-ui-sideline-enable nil
+;;         lsp-ui-flycheck-enable t
+;;         lsp-ui-flycheck-list-position 'right
+;;         lsp-ui-flycheck-live-reporting t
+;;         lsp-ui-peek-enable t
+;;         lsp-ui-peek-list-width 60
+;;         lsp-ui-peek-peek-height 25)
+
+;; (add-hook 'lsp-mode-hook 'lsp-ui-mode))
+
+;; (use-package lsp-ui
+;;   :commands lsp-ui-mode
+;;   :config
+;;   (setq lsp-ui-doc-enable nil)
+;;   (setq lsp-ui-doc-header t)
+;;   (setq lsp-ui-doc-include-signature t)
+;;   (setq lsp-ui-doc-border (face-foreground 'default))
+;;   (setq lsp-ui-sideline-show-code-actions t)
+;;   (setq lsp-ui-sideline-delay 0.05))
 
 (use-package go-mode
   :init
@@ -118,11 +155,6 @@
     (add-hook 'go-mode-hook '(lambda() (set-fill-column 80)))
     (setq indent-tabs-mode 1)))
 
-(use-package flycheck
-  :ensure t
-  :init (global-flycheck-mode))
-;; :config
-;; (setq flycheck-disabled-checkers '(python-mypy c/c++-gcc)))
 
 (use-package ag
   :config
@@ -136,14 +168,11 @@
   (autoload 'wgrep-ag-setup "wgrep-ag")
   (add-hook 'ag-mode-hook 'wgrep-ag-setup))
 
-(use-package winnow) ;; filtering ag results buffer
-
 (use-package magit
   :bind (("C-x g" . magit-status))
   :init (delete 'Git vc-handled-backends))
-
-(use-package rcirc :init (progn (setq rcirc-default-nick "adamrt" rcirc-server-alist '(("irc.freenode.net" :port 6697 :encryption tls :channels ("#openbsd"))))))
-(use-package sane-term :bind (("C-x t" . sane-term) ("C-x T" . sane-term-create)))
+(require 'magit-todos)
+(magit-todos-mode)
 ;; Searching withing macros is warped
 ;; (use-package swiper :after ivy :bind (("C-s" . swiper) ("C-r" . swiper)))
 
@@ -169,6 +198,8 @@
           (funcall (cdr my-pair)))))
 
 (use-package prettier-js)
+(setq prettier-js-args '("--print-width" "88"))
+
 (use-package web-mode
   :init
   (progn
@@ -194,8 +225,6 @@
          ("C-c f"   . counsel-git)
          ("C-c /"   . counsel-ag)))
 
-
-
 (use-package flx)
 (use-package ivy
   :defer 0.1
@@ -216,24 +245,25 @@
         ivy-extra-directories nil))
 
 ;; for prog modes turn on flyspell-prog-mode (checks spell only in comments)
-(dolist (hook '(lisp-mode-hook
-                emacs-lisp-mode-hook
-                ruby-mode-hook
-                yaml-mode
-                python-mode-hook
-                c-mode-hook
-                go-mode-hook
+(dolist (hook '(c-mode-hook
                 c++-mode-hook
-                shell-mode-hook
-                php-mode-hook
-                css-mode-hook
-                nxml-mode-hook
                 crontab-mode-hook
-                perl-mode-hook
+                css-mode-hook
+                emacs-lisp-mode-hook
+                go-mode-hook
                 javascript-mode-hook
+                lisp-mode-hook
                 nginx-mode-hook
+                nxml-mode-hook
+                perl-mode-hook
+                php-mode-hook
+                python-mode-hook
+                ruby-mode-hook
+                shell-mode-hook
+                yaml-mode
                 LaTeX-mode-hook))
   (add-hook hook 'flyspell-prog-mode))
+
 (defun find-first-non-ascii-char ()
   "Find the first non-ascii character from point onwards."
   (interactive)
@@ -272,7 +302,7 @@
 (require 'dired-x)
 (setq-default dired-omit-files-p t)
 
-(eval-when-compile (require 'cl))
+;; (eval-when-compile (require 'cl))
 (define-minor-mode keep-buffers-mode
   "when active, killing protected buffers results in burying them instead.
 Some may also be erased, which is undo-able."
@@ -340,25 +370,20 @@ If the CDR is nil, then the buffer is only buried."
 
 (global-set-key (kbd "C-r") 'isearch-backward-regexp)
 (global-set-key (kbd "C-s") 'isearch-forward-regexp)
+(global-set-key (kbd "C-x C-b") 'ibuffer)
 
 (global-set-key (kbd "C-c a") 'org-agenda)
 (global-set-key (kbd "C-c b") 'org-switchb)
 (global-set-key (kbd "C-c c") 'org-capture)
 (global-set-key (kbd "C-c l") 'org-store-link)
+
 (global-set-key (kbd "C-c p") 'ag-project)
 (global-set-key (kbd "C-x p") 'ag)
 (global-set-key (kbd "C-c P") 'ag-project-regexp)
+
 (global-set-key (kbd "C-c n") 'cleanup-buffer-or-region)
 (global-set-key (kbd "C-c y") 'bury-buffer)
-(global-set-key (kbd "C-x C-b") 'ibuffer)
-;; (global-set-key (kbd "C-c g") 'dumb-jump-go)
 (global-set-key (kbd "C-j") (lambda () (interactive) (join-line -1)))
-(setq prettier-js-args '(
-                         "--print-width" "88"))
-;;(when (display-graphic-p)
-;; (add-to-list 'default-frame-alist '(font . "JetBrains Mono-14"))
-;; (add-to-list 'default-frame-alist '(line-spacing . 0.2))
-;; (setq-default line-spacing 0.1)
 
 (provide 'init)
 ;;; init.el ends here
@@ -370,8 +395,8 @@ If the CDR is nil, then the buffer is only buried."
  '(custom-safe-themes
    '("171d1ae90e46978eb9c342be6658d937a83aaa45997b1d7af7657546cae5985b" "90a6f96a4665a6a56e36dec873a15cbedf761c51ec08dd993d6604e32dd45940" "7397cc72938446348521d8061d3f2e288165f65a2dbb6366bb666224de2629bb" "9f1d0627e756e58e0263fe3f00b16d8f7b2aca0882faacdc20ddd56a95acb7c2" "4c56af497ddf0e30f65a7232a8ee21b3d62a8c332c6b268c81e9ea99b11da0d3" "f5b6be56c9de9fd8bdd42e0c05fecb002dedb8f48a5f00e769370e4517dde0e8" "fee7287586b17efbfda432f05539b58e86e059e78006ce9237b8732fde991b4c" "0710b0bdd59c8a7aacf0640591b38fcad5978a0fcfff3fdd999e63499ada8e3e" "c7eb06356fd16a1f552cfc40d900fe7326ae17ae7578f0ef5ba1edd4fdd09e58" "3b8284e207ff93dfc5e5ada8b7b00a3305351a3fb222782d8033a400a48eca48" "37768a79b479684b0756dec7c0fc7652082910c37d8863c35b702db3f16000f8" default))
  '(package-selected-packages
-   '(ac-capf company-box atom-one-dark-theme material-theme modus-themes solarized-theme ample-theme ample-zen-theme zenburn-theme yasnippet yaml-mode winnow which-key wgrep-ag web-mode vterm use-package undo-tree terraform-mode syntax-subword smex smartparens sane-term prettier-js pinentry php-mode persistent-scratch nordless-theme nord-theme nhexl-mode nginx-mode magit lsp-ui lsp-ivy grayscale-theme google-c-style go-mode glsl-mode git-timemachine flycheck flx dumb-jump dockerfile-mode diminish dap-mode counsel company clang-format change-inner browse-kill-ring blacken ag))
- '(tool-bar-mode nil))
+   '(magit-todos dap-mode rust-mode csv-mode ac-capf company-box atom-one-dark-theme material-theme modus-themes solarized-theme ample-theme ample-zen-theme zenburn-theme yasnippet yaml-mode winnow which-key wgrep-ag web-mode vterm use-package undo-tree terraform-mode syntax-subword smex smartparens sane-term prettier-js pinentry php-mode persistent-scratch nordless-theme nord-theme nhexl-mode nginx-mode magit grayscale-theme google-c-style go-mode glsl-mode git-timemachine flycheck flx dumb-jump dockerfile-mode diminish counsel company clang-format change-inner browse-kill-ring blacken ag)))
+
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.

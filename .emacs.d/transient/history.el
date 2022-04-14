@@ -25,6 +25,7 @@
   ("-n256" "--graph" "--color" "--decorate"))
  (magit-merge nil
               ("--ff-only"))
+ (magit-notes nil)
  (magit-pull
   ("--rebase")
   nil)
@@ -34,6 +35,8 @@
  (magit-rebase
   ("--autostash")
   nil)
+ (magit-remote
+  ("-f"))
  (magit-reset nil)
  (magit-revert
   ("--edit")
