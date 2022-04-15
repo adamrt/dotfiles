@@ -1,47 +1,37 @@
-# ~/.bashrc: executed by bash(1) for non-login shells.
-
 # If not running interactively, don't do anything
 case $- in
     *i*) ;;
-      *) return;;
+    *) return;;
 esac
 
-HISTCONTROL=ignoreboth
+HISTCONTROL=ignoreboth # ignore dup lines or lines starting with space
 HISTSIZE=1000
 HISTFILESIZE=2000
 
-shopt -s histappend
-shopt -s checkwinsize
+shopt -s histappend # append to the history file, don't overwrite it
+shopt -s checkwinsize # update the values of LINES and COLUMNS on resize
 
-# set variable identifying the chroot you work in (used in the prompt below)
-if [ -z "${debian_chroot:-}" ] && [ -r /etc/debian_chroot ]; then
-    debian_chroot=$(cat /etc/debian_chroot)
-fi
+# make less more friendly for non-text input files, see lesspipe(1)
+[ -x /usr/bin/lesspipe ] && eval "$(SHELL=/bin/sh lesspipe)"
 
-PS1='${debian_chroot:+($debian_chroot)}\u@\h:\w\$ '
+case "$TERM" in
+    xterm*|rxvt*)
+        PS1="\[\e]0;${debian_chroot:+($debian_chroot)}\u@\h: \w\a\]$PS1"
+        ;;
+    *)
+        ;;
+esac
 
-export LESSHISTFILE=-
+# colored GCC warnings and errors
+export GCC_COLORS='error=01;31:warning=01;35:note=01;36:caret=01;32:locus=01:quote=01'
 
-export DOCKER_HOST=unix:///run/user/1000/docker.sock
-
-# GPG
+# add gpg setup
 export GPG_TTY=$(tty)
 gpgconf --launch gpg-agent
-. "$HOME/.cargo/env"
 
-alias db="~/bin/datagrip-2021.2.4/bin/datagrip.sh &"
-alias ff="~/bin/firefox/firefox &"
-
+# Directory tracking
 vterm_printf(){
-    if [ -n "$TMUX" ] && ([ "${TERM%%-*}" = "tmux" ] || [ "${TERM%%-*}" = "screen" ] ); then
-        # Tell tmux to pass the escape sequences through
-        printf "\ePtmux;\e\e]%s\007\e\\" "$1"
-    elif [ "${TERM%%-*}" = "screen" ]; then
-        # GNU screen (screen, screen-256color, screen-256color-bce)
-        printf "\eP\e]%s\007\e\\" "$1"
-    else
-        printf "\e]%s\e\\" "$1"
-    fi
+    printf "\e]%s\e\\" "$1"
 }
 
 vterm_prompt_end(){
@@ -49,6 +39,7 @@ vterm_prompt_end(){
 }
 PS1=$PS1'\[$(vterm_prompt_end)\]'
 
+# Actually clear scrollback instead of just moving up
 if [[ "$INSIDE_EMACS" = 'vterm' ]]; then
     function clear(){
         vterm_printf "51;Evterm-clear-scrollback";
