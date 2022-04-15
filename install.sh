@@ -1,5 +1,6 @@
 #!/bin/bash
 
+ln -s ~/src/dotfiles/profile ~/.profile
 ln -s ~/src/dotfiles/bashrc ~/.bashrc
 ln -s ~/src/dotfiles/flake8 ~/.flake8
 ln -s ~/src/dotfiles/gitconfig ~/.gitconfig
