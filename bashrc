@@ -46,3 +46,9 @@ if [[ "$INSIDE_EMACS" = 'vterm' ]]; then
         tput clear;
     }
 fi
+
+# fnm (for newer version of node)
+export PATH=/home/adam/.fnm:$PATH
+
+# eval "`fnm env`"
+eval "$(fnm env 2> /dev/null)"
